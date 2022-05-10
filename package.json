@@ -8,12 +8,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "bpmn-js": "^9.0.3",
     "bpmn-js-properties-panel": "^1.1.1",
+    "bpmn-js": "^9.0.3",
     "vue": "^3.2.25"
   },
   "devDependencies": {
+    "@bpmn-io/properties-panel": "^0.13.2",
     "@vitejs/plugin-vue": "^2.3.1",
+    "bpmn-js": "^9.0.3",
+    "camunda-bpmn-moddle": "^6.1.2",
     "vite": "^2.9.7"
   }
 }
