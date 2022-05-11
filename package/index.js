@@ -1,6 +1,6 @@
-import Designer from './designer'
+import ProcessDesigner from './designer'
 
-const components = [Designer]
+const components = [ProcessDesigner]
 
 const install = function (Vue) {
   components.forEach(component => {

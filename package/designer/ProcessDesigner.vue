@@ -23,7 +23,7 @@ import DefaultEmptyXML from "./plugins/defaultEmpty";
 
 import { DownloadOutlined, DownOutlined, FolderOpenOutlined } from '@ant-design/icons-vue';
 export default {
-  name: 'Designer',
+  name: 'ProcessDesigner',
   components: {
     DownloadOutlined,
     DownOutlined,

@@ -9,14 +9,14 @@ import App from './App.vue'
 import 'ant-design-vue/dist/antd.css';
 
 
-import Designer from '../package/index.js'
+import ProcessDesigner from '../package/index.js'
 
 
 const app = createApp(App)
 // console.log('app', app)
-// console.log('design', Designer)
+// console.log('design', ProcessDesigner)
 
-Designer.install(app)
+ProcessDesigner.install(app)
 
 app.use(Antd)
 

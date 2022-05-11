@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <Designer />
+  <ProcessDesigner />
 </template>
 
 <style>

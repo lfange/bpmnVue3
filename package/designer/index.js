@@ -1,7 +1,7 @@
-import Designer from './Designer.vue'
+import ProcessDesigner from './ProcessDesigner.vue'
 
-Designer.install = function (Vue) {
-  Vue.component(Designer.name, Designer)
+ProcessDesigner.install = function (Vue) {
+  Vue.component(ProcessDesigner.name, ProcessDesigner)
 }
 
-export default Designer
+export default ProcessDesigner
