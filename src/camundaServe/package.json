@@ -1,0 +1,17 @@
+{
+  "name": "camundaserve",
+  "version": "0.0.1",
+  "description": "koa2 camundaServe",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "'fanqie'",
+  "license": "ISC",
+  "dependencies": {
+    "camunda-external-task-client-js": "^2.2.0",
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1"
+  }
+}
