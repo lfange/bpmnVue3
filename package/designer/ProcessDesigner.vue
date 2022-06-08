@@ -22,6 +22,12 @@ import 'bpmn-js-properties-panel/dist/assets/element-templates.css' // 右边工
 import DefaultEmptyXML from "./plugins/defaultEmpty";
 
 import { DownloadOutlined, DownOutlined, FolderOpenOutlined } from '@ant-design/icons-vue';
+
+
+import customTranslate from './plugins/translate/customTranslate'
+
+
+import CustomPaletteProvider from "./plugins/palette";
 export default {
   name: 'ProcessDesigner',
   components: {
@@ -39,6 +45,12 @@ export default {
   },
   methods: {
     int () {
+      console.log('sss', CustomPaletteProvider)
+
+      const customTranslates = {
+        translate: [ 'value', customTranslate ]
+      }
+
       this.bpmnModeler = new Modeler({
         container: '#canvas',
         propertiesPanel: {
@@ -49,14 +61,15 @@ export default {
           // 右边的属性栏
           BpmnPropertiesPanelModule,
           BpmnPropertiesProviderModule,
-          CamundaPlatformPropertiesProviderModule
+          CamundaPlatformPropertiesProviderModule,
+          CustomPaletteProvider,
+          customTranslates    // 翻译
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor
         }
       })
 
-      console.log('bpmn', this.bpmnModeler)
       this.createNewDiagram()
     },
 
@@ -73,6 +86,7 @@ export default {
       } catch (e) {
         console.error(`[Process Designer Warn]: ${e?.message || e}`);
       }
+      console.dir(this.bpmnModeler)
 
     },
     async downloadProcess (type, name) {
@@ -111,8 +125,10 @@ export default {
       }
     },
 
-    downloadProcessAsXml () {
-      this.downloadProcess("xml")
+    /*  ----------------------------------------------- refs methods------------------------------------------------------------- */ 
+    // 下载不同类型文件
+    downloadProcessAsFile (type) {
+      this.downloadProcess(type)
     },
     // 根据所需类型进行转码并返回下载地址
     setEncoded (type, filename = "diagram", data) {
@@ -152,13 +168,13 @@ export default {
         <template #overlay>
           <a-menu>
             <a-menu-item key="1">
-              <a-button type="text" @click="downloadProcessAsXml">下载为XML</a-button>
+              <a-button type="text" @click="downloadProcessAsFile('xml')">下载为XML</a-button>
             </a-menu-item>
             <a-menu-item key="2">
-              <a-button type="text" @click="downloadProcessAsXml">下载为SVG文件</a-button>
+              <a-button type="text" @click="downloadProcessAsFile('svg')">下载为SVG文件</a-button>
             </a-menu-item>
             <a-menu-item key="3">
-              <a-button type="text" @click="downloadProcessAsXml">下载为BPMN文件</a-button>
+              <a-button type="text" @click="downloadProcessAsFile('bpmn')">下载为BPMN文件</a-button>
             </a-menu-item>
           </a-menu>
         </template>
