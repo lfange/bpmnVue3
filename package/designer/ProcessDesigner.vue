@@ -1,60 +1,67 @@
-<script >
-import { ref } from 'vue'
+<script>
+import { ref } from "vue";
 // 引入相关的依赖
-import Modeler from 'bpmn-js/lib/Modeler'
+import Modeler from "bpmn-js/lib/Modeler";
+import axios from 'axios';
+import qs from 'qs';
 
-import 'bpmn-js/dist/assets/diagram-js.css' // 左边工具栏以及编辑节点的样式
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css'
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
+import "bpmn-js/dist/assets/diagram-js.css"; // 左边工具栏以及编辑节点的样式
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  CamundaPlatformPropertiesProviderModule
-} from 'bpmn-js-properties-panel';
+  CamundaPlatformPropertiesProviderModule,
+} from "bpmn-js-properties-panel";
 
 // import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
-import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda'
+import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda";
 
-import 'bpmn-js-properties-panel/dist/assets/properties-panel.css' // 右边工具栏样式
-import 'bpmn-js-properties-panel/dist/assets/element-templates.css' // 右边工具栏样式
+import "bpmn-js-properties-panel/dist/assets/properties-panel.css"; // 右边工具栏样式
+import "bpmn-js-properties-panel/dist/assets/element-templates.css"; // 右边工具栏样式
 import DefaultEmptyXML from "./plugins/defaultEmpty";
 
-import { DownloadOutlined, DownOutlined, FolderOpenOutlined } from '@ant-design/icons-vue';
+import { DownloadOutlined, DownOutlined, FolderOpenOutlined } from "@ant-design/icons-vue";
 
-
-import customTranslate from './plugins/translate/customTranslate'
-
+import customTranslate from "./plugins/translate/customTranslate";
 
 import CustomPaletteProvider from "./plugins/palette";
 export default {
-  name: 'ProcessDesigner',
+  name: "ProcessDesigner",
+  props: {
+    events: {
+      type: Array,
+      default: () => ["element.click"]
+    },
+  },
   components: {
     DownloadOutlined,
     DownOutlined,
-    FolderOpenOutlined
+    FolderOpenOutlined,
   },
-  data () {
+  data() {
     return {
-      bpmnModeler: null
-    }
+      bpmnModeler: null,
+    };
   },
-  mounted () {
-    this.int()
+  mounted() {
+    this.initBpmnModeler();
+    this.createNewDiagram();
   },
   methods: {
-    int () {
-      console.log('sss', CustomPaletteProvider)
+    initBpmnModeler() {
+      console.log("sss", CustomPaletteProvider);
 
       const customTranslates = {
-        translate: [ 'value', customTranslate ]
-      }
+        translate: ["value", customTranslate],
+      };
 
-      this.bpmnModeler = new Modeler({
-        container: '#canvas',
+      const iss = new Modeler({
+        container: "#canvas",
         propertiesPanel: {
-          parent: '#properties'
+          parent: "#properties",
           // parent: '#js-properties-panel'
         },
         additionalModules: [
@@ -63,17 +70,50 @@ export default {
           BpmnPropertiesProviderModule,
           CamundaPlatformPropertiesProviderModule,
           CustomPaletteProvider,
-          customTranslates    // 翻译
+          customTranslates, // 翻译
         ],
         moddleExtensions: {
-          camunda: camundaModdleDescriptor
-        }
-      })
+          camunda: camundaModdleDescriptor,
+        },
+      });
+      this.bpmnModeler = iss
 
-      this.createNewDiagram()
+      this.$emit("init-finished", this.bpmnModeler);
+      this.initModelListeners();
     },
-
-    async createNewDiagram (xml) {
+    initModelListeners() {
+      const EventBus = this.bpmnModeler.get("eventBus");
+      const that = this;
+      // 注册需要的监听事件, 将. 替换为 - , 避免解析异常
+      this.events.forEach(event => {
+        EventBus.on(event, function(eventObj) {
+          let eventName = event.replace(/\./g, "-");
+          let element = eventObj ? eventObj.element : null;
+          that.$emit(eventName, element, eventObj);
+        });
+      });
+      // 监听图形改变返回xml
+      EventBus.on("commandStack.changed", async event => {
+        try {
+          this.recoverable = this.bpmnModeler.get("commandStack").canRedo();
+          this.revocable = this.bpmnModeler.get("commandStack").canUndo();
+          let { xml } = await this.bpmnModeler.saveXML({ format: true });
+          this.$emit("commandStack-changed", event);
+          this.$emit("input", xml);
+          this.$emit("change", xml);
+        } catch (e) {
+          console.error(`[Process Designer Warn]: ${e.message || e}`);
+        }
+      });
+      // 监听视图缩放变化
+      this.bpmnModeler.on("canvas.viewbox.changed", ({ viewbox }) => {
+        this.$emit("canvas-viewbox-changed", { viewbox });
+        const { scale } = viewbox;
+        this.defaultZoom = Math.floor(scale * 100) / 100;
+      });
+    },
+    /* 创建新的流程图 */
+    async createNewDiagram(xml) {
       // 将字符串转换成图显示出来
       let newId = this.processId || `Process_${new Date().getTime()}`;
       let newName = this.processName || `业务流程_${new Date().getTime()}`;
@@ -86,10 +126,13 @@ export default {
       } catch (e) {
         console.error(`[Process Designer Warn]: ${e?.message || e}`);
       }
-      console.dir(this.bpmnModeler)
-
     },
-    async downloadProcess (type, name) {
+    // 下载流程图到本地
+    /**
+     * @param {string} type
+     * @param {*} name
+     */
+    async downloadProcess(type, name) {
       try {
         const _this = this;
         // 按需要类型创建文件并下载
@@ -114,7 +157,7 @@ export default {
         console.error(`[Process Designer Warn ]: ${e.message || e}`);
       }
       // 文件下载方法
-      function downloadFunc (href, filename) {
+      function downloadFunc(href, filename) {
         if (href && filename) {
           let a = document.createElement("a");
           a.download = filename; //指定下载的文件名
@@ -125,13 +168,13 @@ export default {
       }
     },
 
-    /*  ----------------------------------------------- refs methods------------------------------------------------------------- */ 
+    /*  -------------------------------------- refs methods -------------------------------------- */
     // 下载不同类型文件
-    downloadProcessAsFile (type) {
-      this.downloadProcess(type)
+    downloadProcessAsFile(type) {
+      this.downloadProcess(type);
     },
     // 根据所需类型进行转码并返回下载地址
-    setEncoded (type, filename = "diagram", data) {
+    setEncoded(type, filename = "diagram", data) {
       const encodedData = encodeURIComponent(data);
       return {
         filename: `${filename}.${type}`,
@@ -140,19 +183,114 @@ export default {
       };
     },
     // 加载本地文件
-    importLocalFile () {
+    importLocalFile() {
       const that = this;
       const file = this.$refs.refFile.files[0];
       const reader = new FileReader();
       reader.readAsText(file);
-      reader.onload = function () {
+      reader.onload = function() {
         let xmlStr = this.result;
         that.createNewDiagram(xmlStr);
       };
     },
-  }
-}
 
+    getFun() { // users    getApi
+      axios.get('http://localhost:3000/users', 
+      { 
+        params: {
+          methods: 'get APi.get',
+          name: 'wangshi',
+          age: 12
+        }
+      }, 
+      {
+        headers: { 
+          // withCredentials: true
+        },
+      }
+      ).then(res => {
+        console.log('res', res);
+      })
+    },
+
+    postFun() {
+      axios.post('http://localhost:3000/postApi', 
+        {
+          json: 'json',
+          name: 'wangshi',
+          age: 16
+        }, 
+        {
+          headers: { 
+            // withCredentials: true
+          },
+        }
+        ).then(res => {
+          console.log('res', res);
+        })
+    },
+
+    socketFun() {
+        const socket = new WebSocket('ws://localhost:3000/connection');
+        // Connection opened
+        socket.addEventListener('open', function (event) {
+            console.log('socketTest openopenopen');
+        });
+        // Listen for messages
+        socket.addEventListener('message', function (event) {
+            console.log('Message from server ', event.data);
+        });
+    },
+
+    // 发布
+    async deploy() {
+      try {
+        const { err, xml } = await this.bpmnModeler.saveXML();
+          // 读取异常时抛出异常
+          if (err) {
+            console.error(`[Process Designer Warn ]: ${err.message || err}`);
+          }
+          // fetch("http://localhost:8080/engine-rest/deployment/create",
+          //   {
+          //     method: 'post',
+          //     mode: 'no-cors',
+          //     headers: {
+          //       "Content-Type": 'application/x-www-form-urlencoded' // 'application/json'
+          //     },
+          //     body: formData
+          //   })
+          //     .then((response) => response.json())
+          //     .then((data) => {
+          //       console.log("data", data);
+          //     });
+          
+          const dpm = new FormData()
+          const file = this.$refs.refFile.files[0];
+          const reader = new FileReader();
+          reader.readAsText(file);
+          reader.onload = function() {
+            console.log('result', this);
+            // const xmls = this.result;
+            // dpm.append('deployment-name', 'payment')
+            // dpm.append('deployment-source', 'Camunda Modeler')
+            // dpm.append('enable-duplicate-filtering', true)
+            // dpm.append('Content-Disposition: form-data;name="payment.bpmn";filename="payment.bpmn";Content-Type: text/xml',
+            // new Blob([xmls]))
+            // axios.post('http://localhost:8080/engine-rest/deployment/create',dpm)
+            //   .then(res => {
+            //     if (res.data.id) {
+                  
+            //     }
+            //       console.log('dpmdpm', res);
+            //   })
+          };
+      } catch (e) {
+        console.error(`[deploy is error]: ${e.message || e}`)
+      }
+
+    }
+  },
+};
 </script>
 
 <template>
@@ -168,10 +306,14 @@ export default {
         <template #overlay>
           <a-menu>
             <a-menu-item key="1">
-              <a-button type="text" @click="downloadProcessAsFile('xml')">下载为XML</a-button>
+              <a-button type="text" @click="downloadProcessAsFile('xml')"
+                >下载为XML</a-button
+              >
             </a-menu-item>
             <a-menu-item key="2">
-              <a-button type="text" @click="downloadProcessAsFile('svg')">下载为SVG文件</a-button>
+              <a-button type="text" @click="downloadProcessAsFile('svg')"
+                >下载为SVG文件</a-button
+              >
             </a-menu-item>
             <a-menu-item key="3">
               <a-button type="text" @click="downloadProcessAsFile('bpmn')">下载为BPMN文件</a-button>
@@ -186,8 +328,14 @@ export default {
           <DownOutlined />
         </a-button>
       </a-dropdown>
-
-      <a-button>secondary</a-button>
+      <a-button @click="getFun">getFun</a-button>
+      <a-button @click="postFun">postFun</a-button>
+      <a-button @click="socketFun">socketFun</a-button>
+      <a-button type="primary" @click="deploy">
+        <template #icon>
+        </template>
+        deploy
+      </a-button>
     </div>
     <div class="modeler-designer">
       <div id="canvas" class="canvas" ref="canvas"></div>
