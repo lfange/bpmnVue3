@@ -1,13 +1,13 @@
 import ProcessDesigner from './designer'
+import MyPropertiesPanel from './panel';
 
-const components = [ProcessDesigner]
+const components = [ ProcessDesigner, MyPropertiesPanel ]
 
 const install = function (Vue) {
   components.forEach(component => {
     Vue.component(component.name, component);
   });
 };
-
 
 if (typeof window !== "undefined" && window.Vue) {
   install(window.Vue);

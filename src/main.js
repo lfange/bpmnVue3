@@ -8,11 +8,18 @@ import App from './App.vue'
 
 import 'ant-design-vue/dist/antd.css';
 
+const app = createApp(App)
+
+import "../package/highlight";
 
 import ProcessDesigner from '../package/index.js'
 
+ProcessDesigner.install(app)
+// Object.keys(ProcessDesigner).forEach(compent => {
+//   // compent.install(app)
+//   console.log('compent', compent);
+// })
 
-const app = createApp(App)
 // console.log('app', app)
 // console.log('design', ProcessDesigner)
 

@@ -8,19 +8,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@highlightjs/vue-plugin": "^2.1.0",
     "ant-design-vue": "^3.2.3",
     "axios": "^0.27.2",
     "bpmn-js": "^9.0.3",
     "bpmn-js-properties-panel": "^1.1.1",
+    "highlight.js": "^11.5.1",
     "qs": "^6.10.5",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.15"
+    "vue-router": "^4.0.15",
+    "x2js": "^3.4.3",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@bpmn-io/properties-panel": "^0.13.2",
     "@vitejs/plugin-vue": "^2.3.1",
     "bpmn-js": "^9.0.3",
     "camunda-bpmn-moddle": "^6.1.2",
+    "scss": "^0.2.4",
     "vite": "^2.9.7"
   }
 }
