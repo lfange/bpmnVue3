@@ -23,7 +23,7 @@ ProcessDesigner.install(app)
 // console.log('app', app)
 // console.log('design', ProcessDesigner)
 
-ProcessDesigner.install(app)
+// ProcessDesigner.install(app)
 
 app.use(Antd)
 

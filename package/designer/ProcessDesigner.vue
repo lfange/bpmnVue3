@@ -78,7 +78,7 @@ export default {
       this.bpmnModeler = new Modeler({
         container: "#canvas",
         propertiesPanel: {
-          parent: "#properties",
+          // parent: "#properties",
         },
         additionalModules: [
           // 右边的属性栏
@@ -385,7 +385,7 @@ export default {
     </div>
     <div class="modeler-designer">
       <div id="canvas" class="canvas" ref="canvas"></div>
-      <div id="properties"></div>
+      <!-- <div id="properties"></div> -->
     </div>
     <!-- <img style="width: 220px; height:auto" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABICAYAAACz6LpGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJJSURBVHgB7d0xThtBFIDht1ak0OGOEjrogAvAFXICOENu4BvkCBGcAG4QSipCBx0ldO6gwtnRZCVrZR62U3nzfdKwi1g6/5rZWVtuojWZzPaaJn62p0ftGAf8x9oWrt7f4/tk0jw1f+O4C2HAvOlsFsej9uRHiAP6xmVVNWp/fAtgkaNRAB8ZCwQSAoGEQCDxT4Hs70ccHgYM1pdY01H7SPHkpJ6P203im5uAwVkrkC6Oy8v6+9lZPYqEoVl5iTUfx3RaRzkvS63T04BBWSmQfhw7O3WIhKFaOpB+HMXBQR2FSBiipQJZFMciImFoPr1JL1u5/WVVN2vs7tZjF8PDQ8TLS7223Li/vUXc3gZsrE9nkK2tepzN6rFpPr62+9vra42j+1/YVJ/OIPf39TnH+XnExUXE83MdRTdzzG/vfv1ary0ziW1fNt1S9yDlhV5CKS/87e2Pr5uP4/o6YOMtvYu1KJLHxzoKcTBEKz0H6UfSLbfEwVCt/CS9H4k4GLK13ovV3XyXMMpulTgYqrXfzVsi6bZy7VYxVGsHUngIyND5RCEkBAIJgUBCIJAQCCQEAgmBQKKZzbpPegB9ZhBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBRAlkGsBCJZDfASxyXb7ldq89uWvHOIBOWVkdj5qmeSon7bgKoITxqx3HpY0/rjSf3htt6LcAAAAASUVORK5CYII=" alt=""> -->
     <!-- 用于打开本地文件-->
