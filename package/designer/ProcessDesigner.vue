@@ -67,7 +67,6 @@ export default {
   },
   mounted() {
     this.initBpmnModeler()
-    
   },
   methods: {
     initBpmnModeler() {
@@ -129,7 +128,7 @@ export default {
       });
 
       this.bpmnModeler.on("element.click", (e) => {
-        console.log("element.click", e);
+        // console.log("element.click", e);
       });
     },
     /* 创建新的流程图 */

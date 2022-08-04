@@ -16,7 +16,6 @@ export default function customTranslate(nativeWord, replacements) {
 
   // Replace
   return template.replace(/{([^}]+)}/g, function(_, key) {
-    console.log('_ ', _, key);
     return replacements[key] || '{' + key + '}';
   });
 }

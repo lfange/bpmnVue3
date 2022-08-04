@@ -1,58 +1,45 @@
-<script>
+<script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Test from './test.vue'
+  import Test from './test.vue'
+  import { ref, onMounted } from 'vue';
 
-export default {
-  data() {
-    return {
-      bpmnModel: null,
-      element: null
-    };
-  },
-  methods: {
-    // initFinish(modeler) {
-    //   this.bpmnModel = modeler;
-    // },
+  const bpmnModeler = ref<Object>('nulllllllls');
 
-    elementClick(element) {
-      console.log(element);
-      this.element = element;
-    },
-    elementContextmenu(element) {
-      console.log("elementContextmenu:", element);
-    },
-  },
-};
-</script>
-<script setup>
-  import { ref } from "vue";
-  // let bpmnModel = ref('null');
-  const title = ref('付款流程')
+  const title = ref<String>('付款流程')
+
+  const btn = ref<any>({})
 
   const ids = ref('dsr251sd')
 
-  function initFinish(modeler) {
-    // bpmnModel = modeler;
-    const bpmnModel = ref(modeler);
-    console.log("bpmnModelbpmnModel", modeler);
-    console.log("bpmnModel", bpmnModel);
+  function initFinish(modeler: Object) {
+    // bpmnModeler = modeler;
+    bpmnModeler.value = modeler;
+    console.log("initFinish bpmnModeler", bpmnModeler);
   }
 
-  // function initFinish(prps) {
-  //   bpmnModel = prps
-  // }
+  function elementClick(element: Object) {
+      // this.element = element;
+  }
+
+  function elementContextmenu(element: Object) {
+      console.log("elementContextmenu:", element);
+  }
+
+  onMounted (() => {
+  })
+  
 </script>
 
 <template>
-  {{ typeof bpmnModel }}
+  <!-- <button @click="title = '++'" :ref="btn"> {{ title }}</button> -->
   <div class="container">
-    <Test :bpmnModel="bpmnModel" title="'title'" />
+    <!-- <Test :bpmnModeler="bpmnModeler" title="'title'" /> -->
     <ProcessDesigner
       @element-click="elementClick"
       @element-contextmenu="elementContextmenu"
       @initFinished="initFinish" />
-    <PropertiesPanel :title="title" :id="ids" class="proerties-panel" :bpmnModel="bpmnModel" />
+    <PropertiesPanel :title="title" :id="ids" class="proerties-panel" :bpmnModeler="bpmnModeler" />
   </div>
 </template>
 
@@ -79,7 +66,7 @@ export default {
     .proerties-panel {
       width: 380px;
       position: absolute;
-      top: 20%;
+      top: 6%;
       right: 3%;
     }
   }
