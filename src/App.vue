@@ -4,7 +4,7 @@
   import Test from './test.vue'
   import { ref, onMounted } from 'vue';
 
-  const bpmnModeler = ref<Object>('nulllllllls');
+  const bpmnModeler = ref<Object>({});
 
   const title = ref<String>('付款流程')
 
@@ -20,6 +20,7 @@
 
   function elementClick(element: Object) {
       // this.element = element;
+      console.log(btn.value, btn.value.aaaaaaaa)
   }
 
   function elementContextmenu(element: Object) {
@@ -27,6 +28,7 @@
   }
 
   onMounted (() => {
+    
   })
   
 </script>
@@ -39,7 +41,7 @@
       @element-click="elementClick"
       @element-contextmenu="elementContextmenu"
       @initFinished="initFinish" />
-    <PropertiesPanel :title="title" :id="ids" class="proerties-panel" :bpmnModeler="bpmnModeler" />
+    <PropertiesPanel :title="title" :id="ids" class="proerties-panel" :bpmnModeler="bpmnModeler" ref="btn" />
   </div>
 </template>
 
@@ -66,8 +68,8 @@
     .proerties-panel {
       width: 380px;
       position: absolute;
-      top: 6%;
-      right: 3%;
+      top: 3%;
+      right: 2%;
     }
   }
 </style>

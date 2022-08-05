@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
   
   interface documentObje {
     $type: String
@@ -11,12 +11,13 @@
   }
   // declare const window: Window & { bpmnInstances: Object }
 
+  // Props assgin defalut Value by Using withDefaults
   const props = withDefaults(defineProps<FormState>(), {
     documentation: () => [{ $type: '$type', text: 'documentation  text' }]
   })
   
-
-  let documentation = ref<string>(props.documentation[0].text)
+  const documentation = computed<(String)>(() => props.documentation[0].text || 'null')
+  // const documentation1 = ref<string>(props.documentation[0].text)
 
   function updateDocumentation() {
     console.log('toRef', props.documentation)

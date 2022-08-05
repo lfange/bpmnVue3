@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
-import { ref, reactive, watch, computed } from "vue";
+import { ref, reactive, watch, computed, defineExpose } from "vue";
 import headerTitle from "./header";
 import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
 import ElementBaseInfo from "./base/ElementBaseInfo.vue";
 import ElementDocument from "./document/ElementDocument.vue";
 import translations from "../designer/plugins/translate/translations";
+
+const aaa = ref<String>('aaaaaaaaa')
+
+defineExpose({
+  name: 'PropertiesPanel',
+  aaaaaaaa: aaa
+})
 
 const props = defineProps<{
   id: String;
@@ -118,8 +125,7 @@ function initFormOnChanged(element: any) {
     activatedElement.source &&
     activatedElement.source.type.indexOf("StartEvent") === -1
   );
-  formVisible.value =
-    state.SeleEleType === "UserTask" || state.SeleEleType === "StartEvent";
+  formVisible.value = state.SeleEleType === "UserTask" || state.SeleEleType === "StartEvent";
 }
 
 
