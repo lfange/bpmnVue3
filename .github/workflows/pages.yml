@@ -26,17 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v1
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/checkout@master
+      - name: Build and Deploy
+          run: |
+            npm install
+            npm run build
+        uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: build
   # Deployment job
   deploy:
     environment:
