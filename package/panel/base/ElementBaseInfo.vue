@@ -1,20 +1,38 @@
 <script setup lang="ts">
+import { defineEmits } from 'vue';
 
-    // 类型的 props/emit 声明
-    interface FormState {
-      name: String;
-      id: String;
-      tag: String;
-      isExecutable: String;
-      $type: String;
-    }
+// props/emit typed
+interface FormState {
+  name: String;
+  id: String;
+  versionTag: String;
+  isExecutable: String;
+  $type: String;
+}
 
-    const props = defineProps<{ formState: FormState }>()
+const props = defineProps<{
+  formState: FormState,
+}>()
 
-    function updateS(e: any) {
-      console.log('updateS', props.formState)
-      console.log('updateS', e)
-    }
+const emits = defineEmits<{
+  (e: 'change', T: any): void
+}>()
+
+function updateKeys(key: any) {
+  console.log('updateS', props.formState)
+  const updateObj: any = Object.create(null)
+  if (key === "id") {
+      updateObj.id = props.formState[key]
+      updateObj.di = { id: `${props.formState[key]}_di` }
+  }
+  if (key === "isExpanded") {
+    // window?.bpmnInstances?.modeling.toggleCollapse(this.bpmnElement);
+    return;
+  }
+  // update name.etc
+  updateObj[key] = props.formState[key];
+  emits('change', updateObj)
+}
 </script>
 <!-- <script>
 import { ref, toRefs, defineProps, defineComponent } from "vue";
@@ -22,16 +40,16 @@ import { ref, toRefs, defineProps, defineComponent } from "vue";
 export default defineComponent({});
 </script> -->
 <template>
-    <a-form-item label="名称" name="username">
-      <a-input v-model:value="formState.name"  @change="updateS"/>
-    </a-form-item>
-    <a-form-item label="ID" name="id">
-      <a-input v-model:value="formState.id" />
-    </a-form-item>
-    <a-form-item label="版本标签" name="tag" v-if="formState.$type === 'bpmn:Process'">
-      <a-input v-model:value="formState.tag" />
-    </a-form-item>
-    <a-form-item label="可执行" name="isExecutable" v-if="formState.$type === 'bpmn:Process'">
-      <a-checkbox v-model:checked="formState.isExecutable"></a-checkbox>
-    </a-form-item>
+  <a-form-item label="名称" name="username">
+    <a-input v-model:value="formState.name" @change="updateKeys('name')" />
+  </a-form-item>
+  <a-form-item label="ID" name="id">
+    <a-input v-model:value="formState.id" @change="updateKeys('id')" />
+  </a-form-item>
+  <a-form-item label="版本标签" name="versionTag" v-if="formState.$type === 'bpmn:Process'">
+    <a-input v-model:value="formState.versionTag" @change="updateKeys('versionTag')" />
+  </a-form-item>
+  <a-form-item label="可执行" name="isExecutable" v-if="formState.$type === 'bpmn:Process'">
+    <a-checkbox v-model:checked="formState.isExecutable" @change="updateKeys('isExecutable')"></a-checkbox>
+  </a-form-item>
 </template>

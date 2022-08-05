@@ -12,12 +12,12 @@ const style =  {
 }
 
 
-const headerTitle = (props: String, context: Context) => {
+const headerTitle = (props: Object, context: Context) => {
 
   const title = ref<String>('titletitletitle')
-  console.log('headerTitle', props, `h${props.level}`)
-  console.log('context', context)
-  return h('div', { style, ...context.attrs  }, context.slots)
+  // console.log('headerTitle', props, `h${props.level}`)
+  // console.log('context', context)
+  return h(`h${props.level}`, { style, ...context.attrs  }, context.slots)
 }
 
 export default headerTitle

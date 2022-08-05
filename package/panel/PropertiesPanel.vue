@@ -1,192 +1,192 @@
 <script setup lang="ts">
-  import headerTitle from "./header";
-  import { createFromIconfontCN } from '@ant-design/icons-vue';
-  import { ArrowRightOutlined } from "@ant-design/icons-vue";
+import type { Ref } from "vue";
+import { ref, reactive, watch, computed } from "vue";
+import headerTitle from "./header";
+import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
-  import ElementBaseInfo from "./base/ElementBaseInfo.vue";
+import ElementBaseInfo from "./base/ElementBaseInfo.vue";
+import ElementDocument from "./document/ElementDocument.vue";
+import translations from "../designer/plugins/translate/translations";
 
-  import ElementDocument from "./document/ElementDocument.vue";
+const props = defineProps<{
+  id: String;
+  title: String;
+  bpmnModeler: Object;
+}>();
 
-  const props = defineProps<{
-    id: String,
-    title: String,
-    bpmnModeler: Object,
-  }>()
+// TypeScript Reactive
+interface State {
+  activeKey: String;
+  elementDataObj: Object;
+  elementId: String;
+  SeleEleType: String;
+  bpmnElement: Object;
+  conditionFormVisible: Boolean;
+}
+const state: State = reactive({
+  activeKey: "1",
+  bpmnElement: {},
+  elementDataObj: {},
+  elementId: "",
+  SeleEleType: "",
+  conditionFormVisible: false,
+});
 
-  let SeleEleType = ref<String>('');
-  let elementDataObj = ref<Object>({});
-  const Counter = ref("CounterCounter");
-  const formState = ref<Object>({});
-  let activeKey = ref('1')
-  
-  function onFinishFailed(e: any) {  
-    console.log('onFinishFailed', e);
+const formVisible: Ref<Boolean> = ref(false);
+// or
+const formState = ref<Object>({});
+// Refs TypeScript:   Refs infer the type used above by one of two;
+
+const eventType = computed<String>(() => translations[state.SeleEleType])
+
+function onFinishFailed(e: any) {
+  console.log("onFinishFailed", e);
+}
+
+function onFinish(e: any) {
+  console.log("onFinishonFinish", e);
+}
+
+
+watch(() => props.bpmnModeler, () => {
+  console.log('watch is called')
+  initModels()
+})
+
+function initModels() {
+  window.bpmnInstances = {
+    modeler: props.bpmnModeler,
+    modeling: props.bpmnModeler.get("modeling"),
+    moddle: props.bpmnModeler.get("moddle"),
+    eventBus: props.bpmnModeler.get("eventBus"),
+    bpmnFactory: props.bpmnModeler.get("bpmnFactory"),
+    elementFactory: props.bpmnModeler.get("elementFactory"),
+    elementRegistry: props.bpmnModeler.get("elementRegistry"),
+    replace: props.bpmnModeler.get("replace"),
+    selection: props.bpmnModeler.get("selection"),
+  };
+  getActiveElement();
+}
+
+function getActiveElement() {
+  // 初始第一个选中元素 bpmn:Process
+  initFormOnChanged(null);
+  props.bpmnModeler.on("import.done", () => {
+    initFormOnChanged(null);
+  });
+  // 监听选择事件，修改当前激活的元素以及表单
+  props.bpmnModeler.on("selection.changed", ({ newSelection }) => {
+    console.log("selection", newSelection);
+    initFormOnChanged(newSelection[0] || null);
+  });
+  props.bpmnModeler.on("element.changed", ({ element }) => {
+    // 保证 修改 "默认流转路径" 类似需要修改多个元素的事件发生的时候，更新表单的元素与原选中元素不一致。
+    if (element && element.id === state.elementId) {
+      initFormOnChanged(element);
+    }
+  });
+}
+
+// 初始化数据
+function initFormOnChanged(element: any) {
+  let activatedElement = element;
+  if (!activatedElement) {
+    activatedElement =
+      window.bpmnInstances.elementRegistry.find(
+        (el: { type: string }) => el.type === "bpmn:Process"
+      ) ??
+      window.bpmnInstances.elementRegistry.find(
+        (el: { type: string }) => el.type === "bpmn:Collaboration"
+      );
   }
+  if (!activatedElement) return;
 
-  function onFinish(e: any) {
-    console.log('onFinishonFinish', e);
-  }
+  state.SeleEleType = activatedElement.type;
 
-  // console.log('defineProps', title)
+  console.log("SeleEleType", state.SeleEleType);
+  // Log.printBack(`select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`);
+  // Log.prettyInfo("businessObject", activatedElement.businessObject);
+  window.bpmnInstances.bpmnElement = activatedElement;
+  state.bpmnElement = activatedElement;
+  state.elementId = activatedElement.id;
+  state.SeleEleType = activatedElement.type.split(":")[1] || "";
+  state.elementDataObj = JSON.parse(
+    JSON.stringify(activatedElement.businessObject)
+  );
+  state.conditionFormVisible = !!(
+    state.SeleEleType === "SequenceFlow" &&
+    activatedElement.source &&
+    activatedElement.source.type.indexOf("StartEvent") === -1
+  );
+  formVisible.value =
+    state.SeleEleType === "UserTask" || state.SeleEleType === "StartEvent";
+}
 
-  console.log('== this', props)
-  function onFinished() {
-    console.log('onFinished this', props.bpmnModeler.get("moddle"))
-    console.log('onFinished', props.bpmnModeler.value)
-  }
 
-  onMounted(() => {
-
-  })
-  
+function updateProperties(updateObj: any) {
+  console.log('updateSet', updateObj)
+  const bpmnElement = window.bpmnInstances.bpmnElement || {};
+  window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
+}
 
 </script>
 <script lang="ts">
-import { ref, toRefs, defineProps, defineComponent, onMounted } from "vue";
+  import { defineComponent } from "vue";
 
-// declare const elementRegistry: Object;
-// declare let bpmnInstances: Object & { elementRegistry: Object };
-// declare const window: Window & { bpmnInstances: Object };
-
-declare interface Window {
-  bpmnInstances?: Object & { elementRegistry?: Object }
-}
-
-export default defineComponent({
-  name: "PropertiesPanel",
-  // props: {
-  //   title: String,
-  //   bpmnModel: Object,
-  // },
-  // setup(props, context) {
-  //   const { title } = toRefs(props)
-  //   console.log("toRefs", title);
-  //   console.log("title", props, props.bpmnModel);
-    
-  //   console.log('context', context.attrs);
-  //   const Counter = ref("countersssssssssssssss");
-  //   return {
-  //     title,
-  //     Counter,
-  //   };
-  // }
-  created() {
-    // this.initModels()
-  },
-  methods: {
-    initModels() {
-
-      console.log('initModels', this.bpmnModeler)
-      // 初始化 modeler 以及其他 moddle
-      if (!this.bpmnModeler) {
-        // 避免加载时 流程图 并未加载完成
-        this.timer = setTimeout(() => this.initModels(), 10);
-        return;
-      }
-      if (this.timer) clearTimeout(this.timer);
-      window.bpmnInstances = {
-        modeler: this.bpmnModeler,
-        modeling: this.bpmnModeler.get("modeling"),
-        moddle: this.bpmnModeler.get("moddle"),
-        eventBus: this.bpmnModeler.get("eventBus"),
-        bpmnFactory: this.bpmnModeler.get("bpmnFactory"),
-        elementFactory: this.bpmnModeler.get("elementFactory"),
-        elementRegistry: this.bpmnModeler.get("elementRegistry"),
-        replace: this.bpmnModeler.get("replace"),
-        selection: this.bpmnModeler.get("selection")
-      };
-      this.getActiveElement();
-    },
-    getActiveElement() {
-      // 初始第一个选中元素 bpmn:Process
-      this.initFormOnChanged(null);
-      this.bpmnModeler.on("import.done", e => {
-        this.initFormOnChanged(null);
-      });
-      // 监听选择事件，修改当前激活的元素以及表单
-      this.bpmnModeler.on("selection.changed", ({ newSelection }) => {
-        console.log('selection', newSelection)
-        this.initFormOnChanged(newSelection[0] || null);
-      });
-      this.bpmnModeler.on("element.changed", ({ element }) => {
-        // 保证 修改 "默认流转路径" 类似需要修改多个元素的事件发生的时候，更新表单的元素与原选中元素不一致。
-        if (element && element.id === this.elementId) {
-          this.initFormOnChanged(element);
-        }
-      });
-    },
-    // 初始化数据
-    initFormOnChanged(element: Object) {
-      let activatedElement = element;
-      if (!activatedElement) {
-        activatedElement =
-          window.bpmnInstances.elementRegistry.find(el => el.type === "bpmn:Process") ??
-          window.bpmnInstances.elementRegistry.find(el => el.type === "bpmn:Collaboration");
-      }
-      if (!activatedElement) return;
-
-      this.SeleEleType = activatedElement.type;
-
-      console.log('SeleEleType', this.SeleEleType)
-      // Log.printBack(`select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`);
-      // Log.prettyInfo("businessObject", activatedElement.businessObject);
-      window.bpmnInstances.bpmnElement = activatedElement;
-      this.bpmnElement = activatedElement;
-      this.elementId = activatedElement.id;
-      this.SeleEleType = activatedElement.type.split(":")[1] || "";
-      this.elementDataObj = JSON.parse(JSON.stringify(activatedElement.businessObject));
-      this.conditionFormVisible = !!(
-        this.SeleEleType === "SequenceFlow" &&
-        activatedElement.source &&
-        activatedElement.source.type.indexOf("StartEvent") === -1
-      );
-      this.formVisible = this.SeleEleType === "UserTask" || this.SeleEleType === "StartEvent";
-    },
-    onFinished1() {
-      console.log('onFinished1', this, this.bpmnModeler)
-      this.initModels()
-    }
-  }
-});
+  export default defineComponent({
+    name: "PropertiesPanel",
+    // props: {
+    //   title: String,
+    //   bpmnModel: Object,
+    // },
+    // setup(props, context) {
+    //   const { title } = toRefs(props)
+    //   console.log("toRefs", title);
+    //   console.log("title", props, props.bpmnModel);
+    //   console.log('context', context.attrs);
+    //   const Counter = ref("countersssssssssssssss");
+    //   return {
+    //     title,
+    //     Counter,
+    //   };
+    // }
+  });
 </script>
 
 <template>
   <div>
-    <button @click="onFinished">button</button>
-    <button @click="onFinished1">button1</button>
-    <headerTitle :innerHTML="'ArrowRightOutlined'"  level="3">
-      {{ SeleEleType }}
-      <icon-font type="icon-tuichu" /> <ArrowRightOutlined /> {{ title }}
+    <headerTitle level="3">
+      {{ eventType }} <icon-font type="icon-tuichu" /> <ArrowRightOutlined /> {{ state.elementDataObj.name }}
     </headerTitle>
     <a-form
-        :model="formState"
-        name="basic"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 19 }"
-        autocomplete="off"
-        @finish="onFinish"
-        @finishFailed="onFinishFailed"
-        >
-        <a-collapse v-model:activeKey="activeKey" :showArrow="false" :expand-icon-position="'right'">
-            <a-collapse-panel key="general" header="常规">
-              <ElementBaseInfo :formState="elementDataObj" />
-            </a-collapse-panel  >
-            <a-collapse-panel key="document" header="文档" >
-              <ElementDocument :formState="elementDataObj"  />
-            </a-collapse-panel>
-            <a-collapse-panel key="1" :header="title" :showArrow="false" >
+      :model="formState"
+      name="basic"
+      :label-col="{ span: 5 }"
+      :wrapper-col="{ span: 19 }"
+      autocomplete="off"
+      @finish="onFinish"
+      @finishFailed="onFinishFailed"
+    >
+      <a-collapse
+        v-model:activeKey="state.activeKey"
+        :showArrow="false"
+        :expand-icon-position="'right'"
+      >
+        <a-collapse-panel key="general" header="常规">
+          <ElementBaseInfo :formState="state.elementDataObj" @change="updateProperties"/>
+        </a-collapse-panel>
+        <a-collapse-panel key="document" header="文档">
+          <ElementDocument :formState="state.elementDataObj" />
+        </a-collapse-panel>
+        <a-collapse-panel key="1" :header="title" :showArrow="false">
+          <p>{{ eventType }}</p>
+        </a-collapse-panel>
 
-                <p>{{ Counter }}</p>
-            </a-collapse-panel>
-
-            <a-collapse-panel key="3" header="This is panel header 3">
-              <p>{{ Counter }}</p>
-            </a-collapse-panel>
-        </a-collapse>
-      </a-form>
+        <a-collapse-panel key="3" header="This is panel header 3">
+          <p>{{ eventType }}</p>
+        </a-collapse-panel>
+      </a-collapse>
+    </a-form>
   </div>
 </template>
-<style lang="scss" scoped>
-
-
-</style>
+<style lang="scss" scoped></style>

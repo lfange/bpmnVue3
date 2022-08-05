@@ -43,6 +43,7 @@ export default {
   "Manual Task": "手工任务",
   "Business Rule Task": "业务规则任务",
   "Service Task": "服务任务",
+  "ServiceTask": '服务任务',
   "Script Task": "脚本任务",
   "Call Activity": "调用活动",
   "Sub Process (collapsed)": "子流程（折叠的）",
@@ -51,7 +52,7 @@ export default {
   "StartEvent": "开始事件",
   "Intermediate Throw Event": "中间事件",
   "End Event": "结束事件",
-  EndEvent: "结束事件",
+  "EndEvent": "结束事件",
   "Create StartEvent": "创建开始事件",
   "Create EndEvent": "创建结束事件",
   "Create Task": "创建任务",
@@ -233,5 +234,7 @@ export default {
   "Specify more than one user as a comma separated list.": "指定多个用户作为逗号分隔的列表。",
   "Tasklist Configuration": "Tasklist配置",
   Startable: "启动",
-  "Specify more than one group as a comma separated list.": "指定多个组作为逗号分隔的列表。"
+  "Specify more than one group as a comma separated list.": "指定多个组作为逗号分隔的列表。",
+  "Process": "程序名称",
+  "SequenceFlow": '事件流向'
 };
