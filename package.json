@@ -2,6 +2,7 @@
   "name": "camundavue",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://lfange.github.io/bpmnVue3",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
