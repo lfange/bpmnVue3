@@ -13,7 +13,6 @@ const style =  {
 
 
 const headerTitle = (props: Object, context: Context) => {
-
   const title = ref<String>('titletitletitle')
   // console.log('headerTitle', props, `h${props.level}`)
   // console.log('context', context)

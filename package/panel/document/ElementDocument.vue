@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineEmits } from 'vue';
   
   interface documentObje {
     $type: String
@@ -9,27 +9,41 @@
   interface FormState {
     documentation?: documentObje[]
   }
+
+  interface Props {
+    formState: FormState
+  }
   // declare const window: Window & { bpmnInstances: Object }
 
   // Props assgin defalut Value by Using withDefaults
-  const props = withDefaults(defineProps<FormState>(), {
-    documentation: () => [{ $type: '$type', text: 'documentation  text' }]
-  })
+  const props = defineProps<Props>()
   
-  const documentation = computed<(String)>(() => props.documentation[0].text || 'null')
-  // const documentation1 = ref<string>(props.documentation[0].text)
+  const emits = defineEmits<{
+    (e: 'change', T: any): void
+  }>()
 
-  function updateDocumentation() {
-    console.log('toRef', props.documentation)
-    const documentation = window.bpmnInstances.bpmnFactory.create("bpmn:Documentation", { text: this.documentation });
-    window.bpmnInstances.modeling.updateProperties(this.bpmnElement, {
-      documentation: [documentation]
-    });
+  const docus = ref<Array<Object>>([])
+
+  function updateDocumentation(index: Number, doc: String) {
+    console.log('toRef', doc, '  doc ', )
+    const documents = window.bpmnInstances.bpmnFactory.create("bpmn:Documentation", { text: doc });
+    const updateObj =  {
+      documentation: [ documents ]
+    }
+    emits('change', updateObj)
+
+    docus.value.forEach(it => {
+      console.log('val', it, it.text)
+    })
+  }
+
+  function getRefs(it) {
+    console.log('it', it, docus.value)
   }
 </script>
 
 <template>
-  <a-form-item label="元素说明" name="documentation">
-    <a-textarea v-model:value="documentation"  @change="updateDocumentation"/>
+  <a-form-item label="元素说明" name="documentation" v-for="(docs, index) in formState.documentation" ref="docus">
+    <a-textarea v-model:value="docs.text"  @change="updateDocumentation(index, docs.text)" />
   </a-form-item>
 </template>

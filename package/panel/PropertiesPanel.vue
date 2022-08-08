@@ -24,7 +24,7 @@ const props = defineProps<{
 // TypeScript Reactive
 interface State {
   activeKey: String;
-  elementDataObj: Object;
+  elementDataObj: any;
   elementId: String;
   SeleEleType: String;
   bpmnElement: Object;
@@ -182,12 +182,11 @@ function updateProperties(updateObj: any) {
           <ElementBaseInfo :formState="state.elementDataObj" @change="updateProperties"/>
         </a-collapse-panel>
         <a-collapse-panel key="document" header="文档">
-          <ElementDocument :formState="state.elementDataObj" />
+          <ElementDocument :formState="state.elementDataObj" @change="updateProperties" />
         </a-collapse-panel>
         <a-collapse-panel key="1" :header="title" :showArrow="false">
           <p>{{ eventType }}</p>
         </a-collapse-panel>
-
         <a-collapse-panel key="3" header="This is panel header 3">
           <p>{{ eventType }}</p>
         </a-collapse-panel>
@@ -195,4 +194,7 @@ function updateProperties(updateObj: any) {
     </a-form>
   </div>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+
+</style>

@@ -1,6 +1,6 @@
 import ProcessDesigner from './designer'
 import MyPropertiesPanel from './panel';
-
+import './styles/index.scss'
 const components = [ ProcessDesigner, MyPropertiesPanel ]
 
 const install = function (Vue) {
