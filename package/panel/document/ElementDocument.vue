@@ -14,7 +14,6 @@
     formState: FormState
   }
   // declare const window: Window & { bpmnInstances: Object }
-
   // Props assgin defalut Value by Using withDefaults
   const props = defineProps<Props>()
   
@@ -22,28 +21,29 @@
     (e: 'change', T: any): void
   }>()
 
-  const docus = ref<Array<Object>>([])
-
+  // update bpmnInstances When properties modifed!
   function updateDocumentation(index: Number, doc: String) {
-    console.log('toRef', doc, '  doc ', )
-    const documents = window.bpmnInstances.bpmnFactory.create("bpmn:Documentation", { text: doc });
+    const documents: Array<Object> = []
+
+    // update each children of documentations because of is Array
+    props.formState.documentation?.forEach((el: documentObje, ind: Number) => {
+      if (index === ind) {
+        documents.push(window.bpmnInstances.bpmnFactory.create("bpmn:Documentation", { text: doc }))
+      } else {
+        documents.push(documents.push(window.bpmnInstances.bpmnFactory.create("bpmn:Documentation", { text: el.text })))
+      }
+    })
+
     const updateObj =  {
-      documentation: [ documents ]
+      documentation: documents
     }
     emits('change', updateObj)
-
-    docus.value.forEach(it => {
-      console.log('val', it, it.text)
-    })
   }
 
-  function getRefs(it) {
-    console.log('it', it, docus.value)
-  }
 </script>
 
 <template>
-  <a-form-item label="元素说明" name="documentation" v-for="(docs, index) in formState.documentation" ref="docus">
+  <a-form-item label="元素说明" name="documentation" v-for="(docs, index) in formState.documentation" >
     <a-textarea v-model:value="docs.text"  @change="updateDocumentation(index, docs.text)" />
   </a-form-item>
 </template>

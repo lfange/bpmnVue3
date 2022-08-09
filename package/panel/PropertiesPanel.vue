@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
-import { ref, reactive, watch, computed, defineExpose } from "vue";
+import { ref, reactive, watch, computed } from "vue";
 import headerTitle from "./header";
 import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
