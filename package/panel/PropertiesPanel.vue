@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
-import { ref, reactive, watch, computed } from "vue";
+import { ref, reactive, watch, computed, provide } from "vue";
 import headerTitle from "./header";
 import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
 import ElementBaseInfo from "./base/ElementBaseInfo.vue";
 import ElementDocument from "./document/ElementDocument.vue";
+import ElementListeners from "./listeners/ElementListeners.vue";
 import translations from "../designer/plugins/translate/translations";
+
+provide('prefix', 'camunda')
 
 const aaa = ref<String>('aaaaaaaaa')
 
@@ -60,7 +63,7 @@ watch(() => props.bpmnModeler, () => {
   initModels()
 })
 
-function initModels() {
+function initModels(): void {
   window.bpmnInstances = {
     modeler: props.bpmnModeler,
     modeling: props.bpmnModeler.get("modeling"),
@@ -83,7 +86,6 @@ function getActiveElement() {
   });
   // 监听选择事件，修改当前激活的元素以及表单
   props.bpmnModeler.on("selection.changed", ({ newSelection }) => {
-    console.log("selection", newSelection);
     initFormOnChanged(newSelection[0] || null);
   });
   props.bpmnModeler.on("element.changed", ({ element }) => {
@@ -110,7 +112,6 @@ function initFormOnChanged(element: any) {
 
   state.SeleEleType = activatedElement.type;
 
-  console.log("SeleEleType", state.SeleEleType);
   // Log.printBack(`select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`);
   // Log.prettyInfo("businessObject", activatedElement.businessObject);
   window.bpmnInstances.bpmnElement = activatedElement;
@@ -128,9 +129,8 @@ function initFormOnChanged(element: any) {
   formVisible.value = state.SeleEleType === "UserTask" || state.SeleEleType === "StartEvent";
 }
 
-
+// update Window.bpmnInstances when properties changed!
 function updateProperties(updateObj: any) {
-  console.log('updateSet', updateObj)
   const bpmnElement = window.bpmnInstances.bpmnElement || {};
   window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
 }
@@ -184,8 +184,8 @@ function updateProperties(updateObj: any) {
         <a-collapse-panel key="document" header="文档">
           <ElementDocument :formState="state.elementDataObj" @change="updateProperties" />
         </a-collapse-panel>
-        <a-collapse-panel key="1" :header="title" :showArrow="false">
-          <p>{{ eventType }}</p>
+        <a-collapse-panel key="extensionElements" header="执行监听器">
+          <ElementListeners :formState="state.elementDataObj" @change="updateProperties" />
         </a-collapse-panel>
         <a-collapse-panel key="3" header="This is panel header 3">
           <p>{{ eventType }}</p>

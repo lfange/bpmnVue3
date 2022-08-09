@@ -36,6 +36,11 @@ export default (key: string, name: string, type: string) => {
                     <camunda:property name="extensionprop" value="Values  ds" />
                     <camunda:property name="extension properties2" value="value2" />
                   </camunda:properties>
+                  <camunda:executionListener class="{Javaexpression}" event="start">
+                    <camunda:field name="jwww">
+                      <camunda:string>wfwe</camunda:string>
+                    </camunda:field>
+                  </camunda:executionListener>
                 </bpmn2:extensionElements>
                 <bpmn2:startEvent id="Event_0nuxc9s" name="payment-trade">
                   <bpmn2:documentation>payment</bpmn2:documentation>

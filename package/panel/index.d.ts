@@ -1,3 +1,6 @@
+declare global {
+  interface Window { bpmnInstances: any }
+}
 
 declare const elementRegistry: Object;
 declare let bpmnInstances: Object & { elementRegistry: Object };

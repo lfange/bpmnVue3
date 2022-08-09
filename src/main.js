@@ -12,7 +12,7 @@ const app = createApp(App)
 
 import "../package/highlight";
 
-import ProcessDesigner from '../package/index.js'
+import ProcessDesigner from '../package/index'
 
 ProcessDesigner.install(app)
 // Object.keys(ProcessDesigner).forEach(compent => {
