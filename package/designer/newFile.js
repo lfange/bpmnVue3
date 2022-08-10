@@ -1,44 +1,21 @@
-<script>
-// import { ref } from "vue";
-// 引入相关的依赖
 import Modeler from "bpmn-js/lib/Modeler";
 import axios from "axios";
-// import qs from "qs";
-
-import "bpmn-js/dist/assets/diagram-js.css"; // 左边工具栏以及编辑节点的样式
-import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
-import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
-import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  CamundaPlatformPropertiesProviderModule,
+  CamundaPlatformPropertiesProviderModule
 } from "bpmn-js-properties-panel";
-
-// import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
 import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda";
-
-import "bpmn-js-properties-panel/dist/assets/properties-panel.css"; // 右边工具栏样式
-import "bpmn-js-properties-panel/dist/assets/element-templates.css"; // 右边工具栏样式
 import DefaultEmptyXML from "./plugins/defaultEmpty";
-
-import { DownloadOutlined, DownOutlined, FolderOpenOutlined, EyeOutlined, RocketOutlined } from "@ant-design/icons-vue";
-
 import customTranslate from "./plugins/translate/customTranslate";
-
 import CustomPaletteProvider from "./plugins/palette";
-
-import { message } from "ant-design-vue";
-
-import "highlight.js/lib/common";
+import {
+  message
+} from "ant-design-vue";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
-// 引入json转换与高亮
 import X2JS from "x2js";
 
-import panel from "../panel/panel.vue";
-
-export default {
+export default (await import('vue')).default.extend({
   name: "ProcessDesigner",
   props: {
     events: {
@@ -66,7 +43,7 @@ export default {
     };
   },
   mounted() {
-    this.initBpmnModeler()
+    this.initBpmnModeler();
   },
   methods: {
     initBpmnModeler() {
@@ -112,7 +89,11 @@ export default {
         try {
           this.recoverable = this.bpmnModeler.get("commandStack").canRedo();
           this.revocable = this.bpmnModeler.get("commandStack").canUndo();
-          let { xml } = await this.bpmnModeler.saveXML({ format: true });
+          let {
+            xml
+          } = await this.bpmnModeler.saveXML({
+            format: true
+          });
           this.$emit("commandStack-changed", event);
           this.$emit("input", xml);
           this.$emit("change", xml);
@@ -121,9 +102,15 @@ export default {
         }
       });
       // 监听视图缩放变化
-      this.bpmnModeler.on("canvas.viewbox.changed", ({ viewbox }) => {
-        this.$emit("canvas-viewbox-changed", { viewbox });
-        const { scale } = viewbox;
+      this.bpmnModeler.on("canvas.viewbox.changed", ({
+        viewbox
+      }) => {
+        this.$emit("canvas-viewbox-changed", {
+          viewbox
+        });
+        const {
+          scale
+        } = viewbox;
         this.defaultZoom = Math.floor(scale * 100) / 100;
       });
 
@@ -138,7 +125,9 @@ export default {
       let newName = this.processName || `业务流程_${new Date().getTime()}`;
       let xmlString = xml || DefaultEmptyXML(newId, newName, this.prefix);
       try {
-        let { warnings } = await this.bpmnModeler.importXML(xmlString);
+        let {
+          warnings
+        } = await this.bpmnModeler.importXML(xmlString);
         if (warnings && warnings.length) {
           warnings.forEach((warn) => console.warn(warn));
         }
@@ -156,20 +145,32 @@ export default {
         const _this = this;
         // 按需要类型创建文件并下载
         if (type === "xml" || type === "bpmn") {
-          const { err, xml } = await this.bpmnModeler.saveXML();
+          const {
+            err,
+            xml
+          } = await this.bpmnModeler.saveXML();
           // 读取异常时抛出异常
           if (err) {
             console.error(`[Process Designer Warn ]: ${err.message || err}`);
           }
-          let { href, filename } = _this.setEncoded(type.toUpperCase(), name, xml);
+          let {
+            href,
+            filename
+          } = _this.setEncoded(type.toUpperCase(), name, xml);
           downloadFunc(href, filename);
         } else {
-          const { err, svg } = await this.bpmnModeler.saveSVG();
+          const {
+            err,
+            svg
+          } = await this.bpmnModeler.saveSVG();
           // 读取异常时抛出异常
           if (err) {
             return console.error(err);
           }
-          let { href, filename } = _this.setEncoded("SVG", name, svg);
+          let {
+            href,
+            filename
+          } = _this.setEncoded("SVG", name, svg);
           downloadFunc(href, filename);
         }
       } catch (e) {
@@ -215,39 +216,33 @@ export default {
 
     getFun() {
       // users    getApi
-      axios.get('http://localhost:3000/users',
-        {
-          params: {
-            methods: 'get APi.get',
-            name: 'wangshi',
-            age: 12
-          }
-        },
-        {
-          headers: {
-            // withCredentials: true
-          },
+      axios.get('http://localhost:3000/users', {
+        params: {
+          methods: 'get APi.get',
+          name: 'wangshi',
+          age: 12
         }
-      ).then(res => {
+      }, {
+        headers: {
+          // withCredentials: true
+        },
+      }).then(res => {
         console.log('res', res);
-      })
+      });
     },
 
     postFun() {
-      axios.post('http://localhost:3000/postApi',
-        {
-          json: 'json',
-          name: 'wangshi',
-          age: 16
+      axios.post('http://localhost:3000/postApi', {
+        json: 'json',
+        name: 'wangshi',
+        age: 16
+      }, {
+        headers: {
+          // withCredentials: true
         },
-        {
-          headers: {
-            // withCredentials: true
-          },
-        }
-      ).then(res => {
+      }).then(res => {
         console.log('res', res);
-      })
+      });
     },
 
     socketFun() {
@@ -265,7 +260,10 @@ export default {
     // 发布
     async deploy() {
       try {
-        const { err, xml } = await this.bpmnModeler.saveXML();
+        const {
+          err,
+          xml
+        } = await this.bpmnModeler.saveXML();
         // 读取异常时抛出异常
         if (err) {
           return console.error(
@@ -300,18 +298,27 @@ export default {
 
     /* ------------------------------------------  预览 ------------------------------------------ */
     previewProcessXML() {
-      this.bpmnModeler.saveXML({ format: true }).then(({ xml }) => {
+      this.bpmnModeler.saveXML({
+        format: true
+      }).then(({
+        xml
+      }) => {
         // const hjs = hljs.highlightAuto('xml').value
-
         this.previewResult.result = xml;
         this.previewResult.previewType = "xml";
         this.previewModelVisible = true;
       });
     },
     previewProcessJson() {
-      this.bpmnModeler.saveXML({ format: true }).then(({ xml }) => {
+      this.bpmnModeler.saveXML({
+        format: true
+      }).then(({
+        xml
+      }) => {
         const newConvert = new X2JS();
-        const { definitions } = newConvert.xml2js(xml);
+        const {
+          definitions
+        } = newConvert.xml2js(xml);
         if (definitions) {
           this.previewResult.result = JSON.stringify(definitions, null, 4);
         } else {
@@ -322,118 +329,4 @@ export default {
       });
     },
   },
-};
-</script>
-
-<template>
-  <div class="process-designer">
-    <div class="process-tooltik">
-      <a-button type="primary" @click="$refs.refFile.click()">
-        <template #icon>
-          <FolderOpenOutlined />
-        </template>
-        打开文件
-      </a-button>
-      <a-dropdown>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="1">
-              <a-button type="text" @click="downloadProcessAsFile('xml')">下载为XML</a-button>
-            </a-menu-item>
-            <a-menu-item key="2">
-              <a-button type="text" @click="downloadProcessAsFile('svg')">下载为SVG文件</a-button>
-            </a-menu-item>
-            <a-menu-item key="3">
-              <a-button type="text" @click="downloadProcessAsFile('bpmn')">下载为BPMN文件</a-button>
-            </a-menu-item>
-          </a-menu>
-        </template>
-        <a-button type="primary">
-          <template #icon>
-            <DownloadOutlined />
-          </template>
-          下载文件
-          <DownOutlined />
-        </a-button>
-      </a-dropdown>
-      <a-dropdown>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="1">
-              <a-button type="text" @click="previewProcessXML">预览XML</a-button>
-            </a-menu-item>
-            <a-menu-item key="2">
-              <a-button type="text" @click="previewProcessJson">预览JSON</a-button>
-            </a-menu-item>
-          </a-menu>
-        </template>
-        <a-button type="primary">
-          <template #icon>
-            <eye-outlined />
-          </template>
-          预览
-          <DownOutlined />
-        </a-button>
-      </a-dropdown>
-      <a-button @click="getFun">getFun</a-button>
-      <a-button @click="postFun">postFun</a-button>
-      <a-button @click="socketFun">socketFun</a-button>
-      <a-button type="primary" @click="deploy">
-        <template #icon>
-          <rocket-outlined />
-        </template> deploy
-      </a-button>
-    </div>
-    <div class="modeler-designer">
-      <div id="canvas" class="canvas" ref="canvas"></div>
-      <!-- <div id="properties"></div> -->
-    </div>
-    <!-- <img style="width: 220px; height:auto" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABICAYAAACz6LpGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJJSURBVHgB7d0xThtBFIDht1ak0OGOEjrogAvAFXICOENu4BvkCBGcAG4QSipCBx0ldO6gwtnRZCVrZR62U3nzfdKwi1g6/5rZWVtuojWZzPaaJn62p0ftGAf8x9oWrt7f4/tk0jw1f+O4C2HAvOlsFsej9uRHiAP6xmVVNWp/fAtgkaNRAB8ZCwQSAoGEQCDxT4Hs70ccHgYM1pdY01H7SPHkpJ6P203im5uAwVkrkC6Oy8v6+9lZPYqEoVl5iTUfx3RaRzkvS63T04BBWSmQfhw7O3WIhKFaOpB+HMXBQR2FSBiipQJZFMciImFoPr1JL1u5/WVVN2vs7tZjF8PDQ8TLS7223Li/vUXc3gZsrE9nkK2tepzN6rFpPr62+9vra42j+1/YVJ/OIPf39TnH+XnExUXE83MdRTdzzG/vfv1ary0ziW1fNt1S9yDlhV5CKS/87e2Pr5uP4/o6YOMtvYu1KJLHxzoKcTBEKz0H6UfSLbfEwVCt/CS9H4k4GLK13ovV3XyXMMpulTgYqrXfzVsi6bZy7VYxVGsHUngIyND5RCEkBAIJgUBCIJAQCCQEAgmBQKKZzbpPegB9ZhBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBhEAgIRBICAQSAoGEQCAhEEgIBBICgYRAICEQSAgEEgKBRAlkGsBCJZDfASxyXb7ldq89uWvHOIBOWVkdj5qmeSon7bgKoITxqx3HpY0/rjSf3htt6LcAAAAASUVORK5CYII=" alt=""> -->
-    <!-- 用于打开本地文件-->
-    <input type="file" id="files" ref="refFile" style="display: none" accept=".xml, .bpmn" @change="importLocalFile" />
-
-    <a-modal v-model:visible="previewModelVisible" :title="`预览${previewResult.previewType}`" width="50%">
-      <highlightjs :language="previewResult.previewType" :code="previewResult.result" />
-    </a-modal>
-
-    <!-- 控制面板 -->
-    <panel />
-  </div>
-</template>
-
-<style scoped>
-.process-designer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-}
-
-.process-tooltik {
-  margin-left: 16px;
-}
-
-.modeler-designer {
-  flex: 1 1 auto;
-  position: relative;
-}
-
-.canvas {
-  width: 100%;
-  height: 100%;
-}
-
-#properties {
-  position: absolute;
-  top: 20px;
-  right: 16px;
-}
-
-.panel {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 300px;
-}
-</style>
+});

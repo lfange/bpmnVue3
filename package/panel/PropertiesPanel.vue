@@ -21,7 +21,7 @@ defineExpose({
 const props = defineProps<{
   id: String;
   title: String;
-  bpmnModeler: Object;
+  bpmnModeler: any;
 }>();
 
 // TypeScript Reactive
@@ -56,7 +56,6 @@ function onFinishFailed(e: any) {
 function onFinish(e: any) {
   console.log("onFinishonFinish", e);
 }
-
 
 watch(() => props.bpmnModeler, () => {
   console.log('watch is called')
@@ -131,7 +130,7 @@ function initFormOnChanged(element: any) {
 
 // update Window.bpmnInstances when properties changed!
 function updateProperties(updateObj: any) {
-  const bpmnElement = window.bpmnInstances.bpmnElement || {};
+  const bpmnElement = bpmnInstances.bpmnElement || {};
   window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
 }
 

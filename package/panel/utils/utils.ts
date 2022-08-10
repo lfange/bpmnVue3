@@ -44,14 +44,14 @@ export function createFieldObject(option, prefix) {
 }
 
 // 创建脚本实例
-export function createScriptObject(options, prefix) {
+export function createScriptObject(options: any, prefix: string) {
   const { scriptType, scriptFormat, value, resource } = options;
   const scriptConfig = scriptType === "inlineScript" ? { scriptFormat, value } : { scriptFormat, resource };
   return window.bpmnInstances.moddle.create(`${prefix}:Script`, scriptConfig);
 }
 
 // 更新元素扩展属性
-export function updateElementExtensions(element, extensionList) {
+export function updateElementExtensions(element: any, extensionList: Object) {
   const extensions = window.bpmnInstances.moddle.create("bpmn:ExtensionElements", {
     values: extensionList
   });
@@ -60,8 +60,13 @@ export function updateElementExtensions(element, extensionList) {
   });
 }
 
+// create bpmn moddle commonly
+export function ModdleCreate(element: any, createObj: Object) {
+  return window.bpmnInstances.moddle.create(element, createObj)
+}
+
 // 创建一个id
-export function uuid(length = 8, chars) {
+export function uuid(length = 8, chars: any) {
   let result = "";
   let charsString = chars || "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = length; i > 0; --i) {

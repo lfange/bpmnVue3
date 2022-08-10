@@ -3,7 +3,7 @@ import MyPropertiesPanel from './panel';
 import './styles/index.scss'
 const components = [ ProcessDesigner, MyPropertiesPanel ]
 
-const install = function (Vue) {
+const install = function (Vue: any) {
   components.forEach(component => {
     Vue.component(component.name, component);
   });

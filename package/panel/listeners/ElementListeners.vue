@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, inject } from 'vue';
-import { listenerType } from '../utils/utils';
-import { createListenerObject } from '../utils/utils';
+import { initListenerType, createListenerObject } from '../utils/utils';
 
 const prefix = inject<string>('prefix')
 
@@ -25,7 +24,13 @@ const columns: Array<Object> = [
 ]
 
 // filter tableData from extensionElements
-const dataSource = computed(() => props.formState.extensionElements.values.filter((ele: any) => ele.$type === `${prefix}:ExecutionListener`) || [])
+const dataSource = computed(
+  () =>
+    (props.formState.extensionElements.values.filter((ele: any) => ele.$type === `${prefix}:ExecutionListener`)).map((listener: any) => initListenerType(listener))
+    || [])
+
+function getR() {
+}
 
 </script>
 <template>
@@ -38,7 +43,7 @@ const dataSource = computed(() => props.formState.extensionElements.values.filte
         </a-popconfirm>
       </template>
       <template v-if="column.dataIndex === 'type'">
-        {{ createListenerObject(record.listenerType) }}
+        {{ createListenerObject(record.listenerType, false, prefix) }}
       </template>
     </template>
   </a-table>
