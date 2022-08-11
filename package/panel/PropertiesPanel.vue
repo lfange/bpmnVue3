@@ -7,6 +7,7 @@ import { ArrowRightOutlined } from "@ant-design/icons-vue";
 import ElementBaseInfo from "./base/ElementBaseInfo.vue";
 import ElementDocument from "./document/ElementDocument.vue";
 import ElementListeners from "./listeners/ElementListeners.vue";
+import ElementProperties from "./properties/ElementProperties.vue";
 import translations from "../designer/plugins/translate/translations";
 import { updateProperties } from './utils/utils'
 
@@ -174,8 +175,8 @@ function initFormOnChanged(element: any) {
         <a-collapse-panel key="extensionElements" header="执行监听器">
           <ElementListeners :formState="state.elementDataObj" @change="updateProperties" />
         </a-collapse-panel>
-        <a-collapse-panel key="3" header="This is panel header 3">
-          <p>{{ eventType }}</p>
+        <a-collapse-panel key="property" header="扩展属性">
+          <ElementProperties :formState="state.elementDataObj" @change="updateProperties" />
         </a-collapse-panel>
       </a-collapse>
     </a-form>

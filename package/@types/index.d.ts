@@ -5,6 +5,7 @@ declare interface Window {
 
 declare var bpmnInstances: any
 declare var Vue: any
+declare module '@*' {}
 
 declare module '*.vue' {
   import { ComponentOptions } from 'vue'

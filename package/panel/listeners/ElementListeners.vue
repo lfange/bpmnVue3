@@ -174,7 +174,7 @@ function handleOk() { }
       </template>
     </template>
   </a-table>
-  <a-button type="primary" block @click="openListenerForm">
+  <a-button type="primary" size="small" block @click="openListenerForm">
     <plus-outlined />添加监听器
   </a-button>
 
@@ -207,7 +207,7 @@ function handleOk() { }
       <div>
         <interaction-outlined /> 注入字段
       </div>
-      <a-button type="primary" @click="openFiledForm">添加字段</a-button>
+      <a-button size="small" type="primary" @click="openFiledForm">添加字段</a-button>
     </div>
     <a-table size="small" :pagination="false" bordered :data-source="draweState.listenerForm?.fields || []"
       :columns="fiedsState.columns">

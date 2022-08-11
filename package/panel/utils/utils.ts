@@ -68,7 +68,12 @@ export function ModdleCreate<T>(element: any = window.bpmnInstances.bpmnElement,
 
 // update Window.bpmnInstances when properties changed!
 export function updateProperties(updateObj: any, bpmnElement: any = window.bpmnInstances.bpmnElement) {
-  window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
+  if (!updateObj) return console.warn('updateProperties is need bpmnElement and properties');
+  try {
+    window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
+  } catch (e: error) {
+    console.warn(`Process is ${e}`)
+  }
 }
 
 // 创建一个id

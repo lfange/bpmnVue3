@@ -10,6 +10,12 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 8088
   },
+  resolve: {
+    alias: {
+      '@': '/package',
+      '@/utils/': '/package/'
+    }
+  },
   css: {
     preprocessorOptions: {
       scss: {
