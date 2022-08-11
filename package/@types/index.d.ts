@@ -1,4 +1,3 @@
-
 // Global compile-time constants
 
 declare var bpmnInstances: any

@@ -8,8 +8,10 @@ import ElementBaseInfo from "./base/ElementBaseInfo.vue";
 import ElementDocument from "./document/ElementDocument.vue";
 import ElementListeners from "./listeners/ElementListeners.vue";
 import translations from "../designer/plugins/translate/translations";
+import { updateProperties } from './utils/utils'
 
 provide('prefix', 'camunda')
+
 
 const aaa = ref<String>('aaaaaaaaa')
 
@@ -25,15 +27,7 @@ const props = defineProps<{
 }>();
 
 // TypeScript Reactive
-interface State {
-  activeKey: String;
-  elementDataObj: any;
-  elementId: String;
-  SeleEleType: String;
-  bpmnElement: Object;
-  conditionFormVisible: Boolean;
-}
-const state: State = reactive({
+const state: any = reactive({
   activeKey: "1",
   bpmnElement: {},
   elementDataObj: {},
@@ -126,12 +120,6 @@ function initFormOnChanged(element: any) {
     activatedElement.source.type.indexOf("StartEvent") === -1
   );
   formVisible.value = state.SeleEleType === "UserTask" || state.SeleEleType === "StartEvent";
-}
-
-// update Window.bpmnInstances when properties changed!
-function updateProperties(updateObj: any) {
-  const bpmnElement = bpmnInstances.bpmnElement || {};
-  window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
 }
 
 </script>

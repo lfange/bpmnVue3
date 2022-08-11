@@ -334,7 +334,7 @@ export default {
         </template>
         打开文件
       </a-button>
-      <a-dropdown>
+      <a-dropdown :trigger="['click']">
         <template #overlay>
           <a-menu>
             <a-menu-item key="1">
@@ -356,7 +356,7 @@ export default {
           <DownOutlined />
         </a-button>
       </a-dropdown>
-      <a-dropdown>
+      <a-dropdown :trigger="['click']">
         <template #overlay>
           <a-menu>
             <a-menu-item key="1">

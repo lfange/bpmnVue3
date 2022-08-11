@@ -128,6 +128,7 @@ export default {
   "element {element} referenced by {referenced}#{property} not yet drawn": "由{referenced}#{property}引用的{element}元素仍未绘制",
   "already rendered {element}": "{element} 已被渲染",
   "failed to import {element}": "导入{element}失败",
+  
   //属性面板的参数
   Id: "编号",
   "ID MUST BE UNIQUE.": "ID必须唯一",
@@ -236,5 +237,9 @@ export default {
   Startable: "启动",
   "Specify more than one group as a comma separated list.": "指定多个组作为逗号分隔的列表。",
   "Process": "程序名称",
-  "SequenceFlow": '事件流向'
+  "SequenceFlow": '事件流向',
+  class: "Java 表达式",
+  expression: "表达式",
+  delegateExpression: "代理表达式",
+  script: "脚本"
 };

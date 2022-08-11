@@ -24,49 +24,54 @@ export function createListenerObject(options: any, isTask: Boolean, prefix: stri
   }
   // 任务监听器的 定时器 设置
   if (isTask && options.event === "timeout" && !!options.eventDefinitionType) {
-    const timeDefinition = window.bpmnInstances.moddle.create("bpmn:FormalExpression", {
+    const timeDefinition = bpmnInstances.moddle.create("bpmn:FormalExpression", {
       body: options.eventTimeDefinitions
     });
-    const TimerEventDefinition = window.bpmnInstances.moddle.create("bpmn:TimerEventDefinition", {
+    const TimerEventDefinition = ModdleCreate("bpmn:TimerEventDefinition", {
       id: `TimerEventDefinition_${uuid(8)}`,
       [`time${options.eventDefinitionType.replace(/^\S/, s => s.toUpperCase())}`]: timeDefinition
     });
     listenerObj.eventDefinitions = [TimerEventDefinition];
   }
-  return window.bpmnInstances.moddle.create(`${prefix}:${isTask ? "TaskListener" : "ExecutionListener"}`, listenerObj);
+  return ModdleCreate(`${prefix}:${isTask ? "TaskListener" : "ExecutionListener"}`, listenerObj);
 }
 
 // 创建 监听器的注入字段 实例
 export function createFieldObject(option, prefix) {
   const { name, fieldType, string, expression } = option;
   const fieldConfig = fieldType === "string" ? { name, string } : { name, expression };
-  return window.bpmnInstances.moddle.create(`${prefix}:Field`, fieldConfig);
+  return ModdleCreate(`${prefix}:Field`, fieldConfig);
 }
 
 // 创建脚本实例
 export function createScriptObject(options: any, prefix: string) {
   const { scriptType, scriptFormat, value, resource } = options;
   const scriptConfig = scriptType === "inlineScript" ? { scriptFormat, value } : { scriptFormat, resource };
-  return window.bpmnInstances.moddle.create(`${prefix}:Script`, scriptConfig);
+  return ModdleCreate(`${prefix}:Script`, scriptConfig);
 }
 
 // 更新元素扩展属性
-export function updateElementExtensions(element: any, extensionList: Object) {
-  const extensions = window.bpmnInstances.moddle.create("bpmn:ExtensionElements", {
+export function updateElementExtensions(extensionList: Array<Object>, element?: any) {
+  const extensions = ModdleCreate("bpmn:ExtensionElements", {
     values: extensionList
   });
-  window.bpmnInstances.modeling.updateProperties(element, {
-    extensionElements: extensions
-  });
+  console.log('extensionList', typeof extensionList,  extensionList)
+  console.log('bpmnEleListenerList',  extensions)
+  updateProperties({ extensionElements: extensions });
 }
 
 // create bpmn moddle commonly
-export function ModdleCreate(element: any, createObj: Object) {
+export function ModdleCreate<T>(element: any = window.bpmnInstances.bpmnElement, createObj: Object):T {
   return window.bpmnInstances.moddle.create(element, createObj)
 }
 
+// update Window.bpmnInstances when properties changed!
+export function updateProperties(updateObj: any, bpmnElement: any = window.bpmnInstances.bpmnElement) {
+  window.bpmnInstances.modeling.updateProperties(bpmnElement, updateObj);
+}
+
 // 创建一个id
-export function uuid(length = 8, chars: any) {
+export function uuid(length: number = 8, chars?: any): string {
   let result = "";
   let charsString = chars || "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = length; i > 0; --i) {
@@ -74,38 +79,3 @@ export function uuid(length = 8, chars: any) {
   }
   return result;
 }
-
-
-export function initListenerType(listener: any) {
-  let listenerType;
-  if (listener.class) listenerType = "classListener";
-  if (listener.expression) listenerType = "expressionListener";
-  if (listener.delegateExpression) listenerType = "delegateExpressionListener";
-  if (listener.script) listenerType = "scriptListener";
-  return {
-    ...JSON.parse(JSON.stringify(listener)),
-    ...(listener.script ?? {}),
-    listenerType: listenerType
-  };
-}
-
-export const listenerType = {
-  classListener: "Java 类",
-  expressionListener: "表达式",
-  delegateExpressionListener: "代理表达式",
-  scriptListener: "脚本"
-};
-
-export const eventType = {
-  create: "创建",
-  assignment: "指派",
-  complete: "完成",
-  delete: "删除",
-  update: "更新",
-  timeout: "超时"
-};
-
-export const fieldType = {
-  string: "字符串",
-  expression: "表达式"
-};

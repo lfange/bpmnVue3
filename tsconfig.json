@@ -13,7 +13,7 @@
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true
   },
-  "include": [  
+  "include": [
     "src/**/*.ts", 
     "src/**/*.d.ts", 
     "src/**/*.tsx", 
