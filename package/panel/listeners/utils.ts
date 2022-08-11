@@ -1,3 +1,31 @@
+// initalized formData
+export function initListenerForm(listener: any) {
+  let self = {
+    ...listener
+  };
+  if (listener.script) {
+    self = {
+      ...listener,
+      ...listener.script,
+      scriptType: listener.script.resource ? "externalScript" : "inlineScript"
+    };
+  }
+  if (listener.event === "timeout" && listener.eventDefinitions) {
+    if (listener.eventDefinitions.length) {
+      let k = "";
+      for (let key in listener.eventDefinitions[0]) {
+        console.log(listener.eventDefinitions, key);
+        if (key.indexOf("time") !== -1) {
+          k = key;
+          self.eventDefinitionType = key.replace("time", "").toLowerCase();
+        }
+      }
+      console.log(k);
+      self.eventTimeDefinitions = listener.eventDefinitions[0][k].body;
+    }
+  }
+  return self;
+}
 
 export function initListenerType(listener: any) {
   let listenerType: string = ''
@@ -16,17 +44,11 @@ export function initListenerType(listener: any) {
 }
 
 export enum listenerType {
-    class = "Java 表达式",
-    expression = "表达式",
-    delegateExpression = "代理表达式",
-    script = "脚本"
+  class = "Java 表达式",
+  expression = "表达式",
+  delegateExpression = "代理表达式",
+  script = "脚本"
 }
-// export const listenerType = {
-//   class: "Java 表达式",
-//   expression: "表达式",
-//   delegateExpression: "代理表达式",
-//   script: "脚本"
-// };
 
 export enum eventType {
   create = '创建'
@@ -40,7 +62,7 @@ export enum eventType {
 //   timeout: "超时"
 // };
 
-export const fieldType = {
-  string: "字符串",
-  expression: "表达式"
+export enum fieldType {
+  string = "字符串",
+  expression = "表达式"
 };

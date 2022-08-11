@@ -1,4 +1,7 @@
 // Global compile-time constants
+declare interface Window {
+  bpmnInstances: any
+}
 
 declare var bpmnInstances: any
 declare var Vue: any

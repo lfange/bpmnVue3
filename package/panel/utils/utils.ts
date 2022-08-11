@@ -4,21 +4,22 @@ export function createListenerObject(options: any, isTask: Boolean, prefix: stri
   listenerObj.event = options.event;
   isTask && (listenerObj.id = options.id); // 任务监听器特有的 id 字段
   switch (options.listenerType) {
-    case "scriptListener":
+    case "script":
       listenerObj.script = createScriptObject(options, prefix);
       break;
-    case "expressionListener":
+    case "expression":
       listenerObj.expression = options.expression;
       break;
-    case "delegateExpressionListener":
+    case "delegateExpression":
       listenerObj.delegateExpression = options.delegateExpression;
       break;
-    default:
+    case "class":
       listenerObj.class = options.class;
+      break;
   }
   // 注入字段
   if (options.fields) {
-    listenerObj.fields = options.fields.map(field => {
+    listenerObj.fields = options.fields.map((field: Object) => {
       return createFieldObject(field, prefix);
     });
   }
