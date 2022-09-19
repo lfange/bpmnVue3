@@ -16,20 +16,21 @@
     "bpmn-js-properties-panel": "^1.1.1",
     "highlight.js": "^11.5.1",
     "qs": "^6.10.5",
-    "vue": "^3.2.25",
+    "vue": "^3.2.37",
     "vue-router": "^4.0.15",
     "x2js": "^3.4.3",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@bpmn-io/properties-panel": "^0.13.2",
-    "@vitejs/plugin-vue": "^2.3.1",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "@vitejs/plugin-vue-jsx": "^2.0.0",
     "bpmn-js": "^9.0.3",
     "camunda-bpmn-moddle": "^6.1.2",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
     "typescript": "^4.7.4",
-    "vite": "^2.9.7"
+    "vite": "^3.0.6"
   }
 }
