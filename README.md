@@ -7,7 +7,7 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
 
 - 🔧 My Power Technology: </br>   
-Vue3 + Ant-design-vue + Jsx + TypeScript + bpmn
+Vite + Vue3 + Ant-design-vue + Jsx + TypeScript + bpmn
 
 - 🔧 My Power Tools: </br>  
 ![VS Code](https://img.shields.io/badge/%E5%86%99%E4%BD%9C%E5%B7%A5%E5%85%B7-VS%20Code-blue)     
