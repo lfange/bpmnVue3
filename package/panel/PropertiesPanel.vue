@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
 import { ref, reactive, watch, computed, provide } from "vue";
-import headerTitle from "./header";
+import HeaderTitle from "./header";
 import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
 import ElementBaseInfo from "./base/ElementBaseInfo.vue";
@@ -149,9 +149,10 @@ function initFormOnChanged(element: any) {
 
 <template>
   <div>
-    <headerTitle level="3">
-      {{ eventType }} <icon-font type="icon-tuichu" /> <ArrowRightOutlined /> {{ state.elementDataObj.name }}
-    </headerTitle>
+    <!-- <icon-font type="icon-tuichu" />  <ArrowRightOutlined />  -->
+    <HeaderTitle level="3">
+      <span>{{ eventType }}</span> : {{ state.elementDataObj.name }}
+    </HeaderTitle>
     <a-form
       :model="formState"
       name="basic"

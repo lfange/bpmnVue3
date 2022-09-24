@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { initListenerType, listenerType, fieldType, initListenerForm } from '@/panel/listeners/utils';
+import { fieldType } from '@/panel/listeners/utils';
+// import { initListenerType, listenerType, fieldType, initListenerForm } from '@/panel/listeners/utils';
 import { PlusOutlined, EditOutlined, DeleteOutlined, InteractionOutlined } from '@ant-design/icons-vue';
 const columns: Object[] = [
   { dataIndex: 'event', key: 'event', title: '事件' },

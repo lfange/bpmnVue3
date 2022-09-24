@@ -136,6 +136,7 @@ export default {
     /* 创建新的流程图 */
     async createNewDiagram(xml) {
       // 将字符串转换成图显示出来
+      console.log('xmlString', xml)
       let newId = this.processId || `Process_${new Date().getTime()}`;
       let newName = this.processName || `业务流程_${new Date().getTime()}`;
       let xmlString = xml || DefaultEmptyXML(newId, newName, this.prefix);
