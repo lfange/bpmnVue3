@@ -34,6 +34,7 @@ import { message } from "ant-design-vue";
 import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 // 引入json转换与高亮
+import Grid from 'diagram-js/lib/features/grid-snapping/visuals'
 import X2JS from "x2js";
 
 import panel from "../panel/panel.vue";
@@ -80,15 +81,16 @@ export default {
           // parent: "#properties",
         },
         additionalModules: [
-          // 右边的属性栏
-          BpmnPropertiesPanelModule,
+          BpmnPropertiesPanelModule,  // 右边的属性栏
           BpmnPropertiesProviderModule,
           CamundaPlatformPropertiesProviderModule,
           CustomPaletteProvider,
           customTranslates, // 翻译
+          Grid  // background grid
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor,
+          
         },
       });
 
@@ -375,14 +377,14 @@ export default {
           <DownOutlined />
         </a-button>
       </a-dropdown>
-      <a-button @click="getFun">getFun</a-button>
+      <!-- <a-button @click="getFun">getFun</a-button>
       <a-button @click="postFun">postFun</a-button>
       <a-button @click="socketFun">socketFun</a-button>
       <a-button type="primary" @click="deploy">
         <template #icon>
           <rocket-outlined />
         </template> deploy
-      </a-button>
+      </a-button> -->
     </div>
     <div class="modeler-designer">
       <div id="canvas" class="canvas" ref="canvas"></div>

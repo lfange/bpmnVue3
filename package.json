@@ -27,6 +27,7 @@
     "@vitejs/plugin-vue-jsx": "^2.0.0",
     "bpmn-js": "^9.0.3",
     "camunda-bpmn-moddle": "^6.1.2",
+    "diagram-js-minimap": "^2.1.1",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
