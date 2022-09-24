@@ -151,7 +151,7 @@ function initFormOnChanged(element: any) {
   <div>
     <!-- <icon-font type="icon-tuichu" />  <ArrowRightOutlined />  -->
     <HeaderTitle level="3">
-      <span>{{ eventType }}</span> : {{ state.elementDataObj.name }}
+      <span>{{ eventType }}</span>： {{ state.elementDataObj.name }}
     </HeaderTitle>
     <a-form
       :model="formState"
