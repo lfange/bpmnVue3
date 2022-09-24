@@ -42,7 +42,7 @@ const formVisible: Ref<Boolean> = ref(false);
 const formState = ref<Object>({});
 // Refs TypeScript:   Refs infer the type used above by one of two;
 
-const eventType = computed<String>(() => translations[state.SeleEleType])
+const eventType = computed<String>(() => translations[state.SeleEleType] || state.SeleEleType)
 
 function onFinishFailed(e: any) {
   console.log("onFinishFailed", e);

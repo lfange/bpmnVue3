@@ -37,6 +37,7 @@ export default {
   "Ad-hoc": "即席",
   "Create {type}": "创建 {type}",
   "Task": "任务",
+  "UserTask": "用户任务",
   "Send Task": "发送任务",
   "Receive Task": "接收任务",
   "User Task": "用户任务",
